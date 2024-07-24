@@ -5,16 +5,19 @@ FROM python:3.10-slim
 WORKDIR /app
 
 # Copy the requirements file into the container
-COPY requirements.txt requirements.txt
+COPY requirements.txt .
 
-# Create a virtual environment
-RUN python -m venv venv
-
-# Activate the virtual environment and install dependencies
-RUN . ./venv/bin/activate && pip install --upgrade pip && pip install -r requirements.txt
+# Create a virtual environment and install dependencies
+RUN python -m venv venv && \
+    . ./venv/bin/activate && \
+    pip install --upgrade pip && \
+    pip install -r requirements.txt
 
 # Copy the rest of the application code into the container
 COPY *.py .
+
+# Ensure the Python script is executable (if needed)
+RUN chmod +x sc13_to_slack.py
 
 # Command to run the application
 CMD ["./venv/bin/python", "sc13_to_slack.py"]
