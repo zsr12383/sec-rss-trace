@@ -11,14 +11,14 @@ from bs4 import BeautifulSoup
 import get_env
 
 keywords = get_nasdaq_top_stocks(50)
-keywords = keywords.union({'MS', 'Google'})
+keywords = keywords.union({'Google'})
 headers = get_env.get_headers()
 slack_webhook_url = get_env.get_slack_webhook_url()
 rss_url = "https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&CIK=&type=sc%2013&company=&dateb=&owner=include&start=0&count=40&output=atom"
 
 # 초기 last_updated 값을 현재 미 동부 시각에서 -2시간으로 설정
 eastern = pytz.timezone('US/Eastern')
-last_updated = (datetime.now(eastern) - timedelta(hours=48)).strftime('%Y-%m-%dT%H:%M:%S-04:00')
+last_updated = (datetime.now(eastern) - timedelta(hours=2)).strftime('%Y-%m-%dT%H:%M:%S-04:00')
 
 
 def fetch_feed(url):
@@ -75,6 +75,7 @@ def check_rss_feed():
 
 
 if __name__ == '__main__':
+    send_to_slack("process start")
     schedule.every(1).minutes.do(check_rss_feed)
     while True:
         schedule.run_pending()
