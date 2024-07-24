@@ -59,7 +59,6 @@ jobs:
           key: ${{ secrets.KEY }}
           envs:
           script: |
-#            set -e
             sh ~/work/sc13/deploy/docker-install.sh
             echo "start docker-compose up: ubuntu"
             sudo docker-compose -v
