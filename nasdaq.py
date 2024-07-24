@@ -11,8 +11,9 @@ def get_nasdaq_stocks():
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
     }
-
+    print("nasdaq_stocks...")
     response = requests.get(url, params=params, headers=headers)
+    print(response)
     data = response.json()['data']['rows']
 
     return data
