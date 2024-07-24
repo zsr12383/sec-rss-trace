@@ -40,7 +40,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.KEY }}
           script: |
-            docker-compose -f ~/work/sc13/deploy/docker-compose.yml down
+            sudo docker-compose -f ~/work/sc13/deploy/docker-compose.yml down
             mkdir -p ~/work/sc13
 
       - name: copy source via ssh key
