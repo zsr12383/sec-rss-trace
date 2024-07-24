@@ -7,8 +7,12 @@ from datetime import datetime, timedelta
 from itertools import takewhile
 from nasdaq import get_nasdaq_top_stocks
 from bs4 import BeautifulSoup
+import logging
 
 import get_env
+
+logging.basicConfig(filename='app.log', level=logging.INFO,
+                    format='%(asctime)s - %(levelname)s - %(message)s')
 
 keywords = get_nasdaq_top_stocks(50)
 keywords = keywords.union({'Google'})
@@ -35,7 +39,9 @@ def fetch(url):
 
 def send_to_slack(message):
     payload = {"text": message}
-    print(requests.post(slack_webhook_url, json=payload))
+    res = requests.post(slack_webhook_url, json=payload)
+    print(res)
+    logging.info(res)
 
 
 def find_contain_keyword(doc):
@@ -75,7 +81,7 @@ def check_rss_feed():
 
 
 if __name__ == '__main__':
-    print(slack_webhook_url)
+    logging.info("slack URL: " + slack_webhook_url)
     send_to_slack("process start")
     schedule.every(1).minutes.do(check_rss_feed)
     while True:
