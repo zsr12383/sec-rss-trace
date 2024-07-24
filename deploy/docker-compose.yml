@@ -3,11 +3,12 @@ services:
   sc13-trace:
     image: zsr12383/sc13-trace:latest
     container_name: sc13-trace
-#    env_file:
-#      - .env
     volumes:
       - ./.env:/app/.env
     network_mode: "host"
     environment:
       - TZ=Asia/Seoul
     restart: always
+    ports:
+      - "80:80"
+      - "443:443"

@@ -39,7 +39,9 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ubuntu
           key: ${{ secrets.KEY }}
-          script: mkdir -p ~/work/sc13
+          script: |
+            docker-compose -f ~/work/sc13/deploy/docker-compose.yml down
+            mkdir -p ~/work/sc13
 
       - name: copy source via ssh key
         uses: burnett01/rsync-deployments@7.0.1
