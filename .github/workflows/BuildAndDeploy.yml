@@ -11,19 +11,19 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v4
 
       - name: Login to Docker Hub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v6
         with:
           push: true
           tags: zsr12383/sc13-trace:latest
@@ -34,7 +34,7 @@ jobs:
           echo "${{ secrets.ENV_VARS }}" >> ./deploy/.env
 
       - name: create remote directory
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@1.0.3
         with:
           host: ${{ secrets.HOST }}
           username: ubuntu
@@ -42,7 +42,7 @@ jobs:
           script: mkdir -p ~/work/sc13
 
       - name: copy source via ssh key
-        uses: burnett01/rsync-deployments@4.1
+        uses: burnett01/rsync-deployments@7.0.1
         with:
           path: ./deploy
           switches: -avzr --delete
@@ -52,7 +52,7 @@ jobs:
           remote_key: ${{ secrets.KEY }}
 
       - name: executing remote ssh commands using password
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@1.0.3
         with:
           host: ${{ secrets.HOST }}
           username: ubuntu
