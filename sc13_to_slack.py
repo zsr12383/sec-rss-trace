@@ -35,7 +35,7 @@ def fetch(url):
 
 def send_to_slack(message):
     payload = {"text": message}
-    requests.post(slack_webhook_url, json=payload)
+    print(requests.post(slack_webhook_url, json=payload))
 
 
 def find_contain_keyword(doc):
@@ -75,6 +75,7 @@ def check_rss_feed():
 
 
 if __name__ == '__main__':
+    print(slack_webhook_url)
     send_to_slack("process start")
     schedule.every(1).minutes.do(check_rss_feed)
     while True:
