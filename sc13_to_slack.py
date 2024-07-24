@@ -80,10 +80,10 @@ def check_rss_feed():
             send_to_slack(message)
 
 
-# if __name__ == '__main__':
-logging.info("slack URL: " + slack_webhook_url)
-send_to_slack("process start")
-schedule.every(1).minutes.do(check_rss_feed)
-while True:
-    schedule.run_pending()
-    time.sleep(1)
+if __name__ == '__main__':
+    logging.info("slack URL: " + slack_webhook_url)
+    send_to_slack("process start")
+    schedule.every(1).minutes.do(check_rss_feed)
+    while True:
+        schedule.run_pending()
+        time.sleep(1)

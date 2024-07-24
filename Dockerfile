@@ -7,11 +7,9 @@ WORKDIR /app
 # Copy the requirements file into the container
 COPY requirements.txt .
 
-# Create a virtual environment and install dependencies
-RUN python -m venv venv && \
-    . ./venv/bin/activate && \
-    pip install --upgrade pip && \
-    pip install -r requirements.txt
+# Install dependencies
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of the application code into the container
 COPY *.py .
@@ -20,4 +18,4 @@ COPY *.py .
 RUN chmod +x sc13_to_slack.py
 
 # Command to run the application
-CMD ["./venv/bin/python", "sc13_to_slack.py"]
+CMD ["python", "sc13_to_slack.py"]
