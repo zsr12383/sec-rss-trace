@@ -59,32 +59,12 @@ jobs:
           key: ${{ secrets.KEY }}
           envs:
           script: |
-            sh ~/work/sc13/docker-install.sh
+            sh ~/work/sc13/deploy/docker-install.sh
             echo "start docker-compose up: ubuntu"
             sudo docker-compose -v
-            cat ~/work/sc13/.env
+            cat ~/work/sc13/deploy/.env
             echo "${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}" | docker login --username your_dockerhub_username --password-stdin
-            sudo docker-compose -f ~/work/sc13/docker-compose.yml pull
-            sudo docker-compose -f ~/work/sc13/docker-compose.yml up -d
+            sudo docker-compose -f ~/work/sc13/deploy/docker-compose.yml pull
+            sudo docker-compose -f ~/work/sc13/deploy/docker-compose.yml up -d
             echo "prune images"
             sudo docker system prune --all -f
-
-#      - name: Deploy to EC2
-#        env:
-#          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-#          DOCKERHUB_REPOSITORY: zsr12383/sc13-trace
-#          EC2_HOST: ${{ secrets.EC2_HOST }}
-#          EC2_USER: ${{ secrets.EC2_USER }}
-#          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-#          EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
-#        run: |
-#          echo "${{ secrets.EC2_SSH_KEY }}" > ec2_key.pem
-#          chmod 400 ec2_key.pem
-#          ssh -o StrictHostKeyChecking=no -i ec2_key.pem $EC2_USER@$EC2_HOST << 'EOF'
-#            docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_TOKEN
-#            docker pull zsr12383/sc13-trace:latest
-#            docker stop my_container || true
-#            docker rm my_container || true
-#            echo "${{secrets.ENV_VARS}}" > .env
-#            docker run -d --name my_container --env-file .env zsr12383/sc13-trace:${{ steps.get_version.outputs.VERSION }}
-#          EOF
