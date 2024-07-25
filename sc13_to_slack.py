@@ -1,5 +1,5 @@
 import feedparser
-import requests
+
 import time
 import pytz
 import schedule
@@ -9,39 +9,19 @@ from nasdaq import get_nasdaq_top_stocks
 from bs4 import BeautifulSoup
 import logging
 
-import get_env
+from request import request_with_exception, send_to_slack
 
 logging.basicConfig(filename='app.log', level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
 keywords = get_nasdaq_top_stocks(50)
 keywords = keywords.union({'Google'})
-headers = get_env.get_headers()
-slack_webhook_url = get_env.get_slack_webhook_url()
+
 rss_url = "https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&CIK=&type=sc%2013&company=&dateb=&owner=include&start=0&count=40&output=atom"
 
 # 초기 last_updated 값을 현재 미 동부 시각에서 -2시간으로 설정
 eastern = pytz.timezone('US/Eastern')
-last_updated = (datetime.now(eastern) - timedelta(hours=2)).strftime('%Y-%m-%dT%H:%M:%S-04:00')
-
-
-def fetch_feed(url):
-    response = requests.get(url, headers=headers)
-    response.raise_for_status()  # Raise an exception for HTTP errors
-    return feedparser.parse(response.content)
-
-
-def fetch(url):
-    response = requests.get(url, headers=headers)
-    response.raise_for_status()  # Raise an exception for HTTP errors
-    return BeautifulSoup(response.text, 'html.parser')
-
-
-def send_to_slack(message):
-    payload = {"text": message}
-    res = requests.post(slack_webhook_url, json=payload)
-    print(res)
-    logging.info(res)
+last_updated = (datetime.now(eastern) - timedelta(hours=48)).strftime('%Y-%m-%dT%H:%M:%S-04:00')
 
 
 def find_contain_keyword(doc):
@@ -59,7 +39,9 @@ def is_new_doc(entry):
 
 def check_rss_feed():
     global last_updated
-    feed = fetch_feed(rss_url)
+    response = request_with_exception(rss_url)
+    if response is None: return
+    feed = feedparser.parse(response.content)
     entries = feed.entries
     tmp_updated = entries[0].updated
     need_check_entries = takewhile(is_new_doc, entries)
@@ -67,7 +49,9 @@ def check_rss_feed():
 
     for entry in need_check_entries:
         time.sleep(0.3)
-        doc = fetch(entry.link)
+        response = request_with_exception(entry.link)
+        if response is None: continue
+        doc = BeautifulSoup(response.text, 'html.parser')
         contain_keyword = find_contain_keyword(doc)
         if not contain_keyword: continue
         entry['keyword'] = contain_keyword
@@ -81,8 +65,8 @@ def check_rss_feed():
 
 
 if __name__ == '__main__':
-    logging.info("slack URL: " + slack_webhook_url)
     send_to_slack("process start")
+    logging.info("process start")
     schedule.every(1).minutes.do(check_rss_feed)
     while True:
         schedule.run_pending()

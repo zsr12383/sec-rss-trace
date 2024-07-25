@@ -1,5 +1,9 @@
-import requests
 import pandas as pd
+import logging
+
+logger = logging.getLogger(__name__)
+
+from request import request_with_exception
 
 
 def get_nasdaq_stocks():
@@ -11,18 +15,13 @@ def get_nasdaq_stocks():
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
     }
-    print("nasdaq_stocks...")
-    response = requests.get(url, params=params, headers=headers)
-    print(response)
+    response = request_with_exception(url, params=params, headers=headers)
     data = response.json()['data']['rows']
-
     return data
 
 
 def get_nasdaq_top_stocks(len=50):
-    # Get the list of Nasdaq stocks
     nasdaq_stocks = get_nasdaq_stocks()
-    # Convert to DataFrame
     df = pd.DataFrame(nasdaq_stocks)
     # Convert market cap to numeric, replacing '-' with NaN
     df['marketCap'] = pd.to_numeric(df['marketCap'].replace('-', float('nan')), errors='coerce')
