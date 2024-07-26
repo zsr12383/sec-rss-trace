@@ -28,14 +28,13 @@ def generate_log_msg(url, method, content) -> str:
     return f'URL:{url} - Method:{method} - Content: {content}'
 
 
-def request_with_exception(url, method=Method.GET, headers=headers, params=None, json=None):
+def request_with_exception(url, method=Method.GET.value, headers=headers, params=None, json=None):
     response = None
     logging.info(generate_log_msg(url, method, 'Request Start'))
     try:
-        # 연결 타임아웃 5초, 읽기 타임아웃 10초
-        if (method == Method.GET):
+        if (method == Method.GET.value):
             response = requests.get(url, headers=headers, params=params, timeout=(5, 10))
-        elif (method == Method.POST):
+        elif (method == Method.POST.value):
             response = requests.post(url, headers=headers, params=params, timeout=(5, 10), json=json)
         response.raise_for_status()
         logging.info(generate_log_msg(url, method, 'Request End'))
@@ -45,7 +44,7 @@ def request_with_exception(url, method=Method.GET, headers=headers, params=None,
         if url != slack_webhook_url:
             send_to_slack(err_log_msg)
     except requests.exceptions.RequestException as e:
-        msg = generate_log_msg(url, method, e)
+        msg = generate_log_msg(url, method, str(e))
         logging.exception(msg)
         if url != slack_webhook_url:
             send_to_slack(msg)
@@ -54,4 +53,4 @@ def request_with_exception(url, method=Method.GET, headers=headers, params=None,
 
 def send_to_slack(message):
     payload = {"text": message}
-    request_with_exception(slack_webhook_url, json=payload, method=Method.POST)
+    request_with_exception(slack_webhook_url, json=payload, method=Method.POST.value)

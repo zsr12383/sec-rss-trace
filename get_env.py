@@ -1,8 +1,10 @@
 import os
-
+import sys
 from dotenv import load_dotenv
+from mode import Mode
 
 load_dotenv()
+mode = sys.argv[1]
 
 
 def get_slack_token():
@@ -14,7 +16,9 @@ def get_slack_channel_id():
 
 
 def get_slack_webhook_url():
-    return os.getenv('SLACK_WEBHOOK_URL')
+    if mode == Mode.SC13.value:
+        return os.getenv('SLACK_WEBHOOK_URL')
+    return os.getenv('SLACK_WEBHOOK_MERGE_URL')
 
 
 def get_headers():

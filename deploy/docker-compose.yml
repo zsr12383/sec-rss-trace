@@ -8,3 +8,14 @@ services:
     environment:
       - TZ=Asia/Seoul
     restart: always
+    command: python sec_bot.py sc13
+  merger-trace:
+    image: zsr12383/sc13-trace:latest
+    container_name: merger-trace
+    volumes:
+      - ./.env:/app/.env
+    network_mode: "host"
+    environment:
+      - TZ=Asia/Seoul
+    restart: always
+    command: python sec_bot.py merge

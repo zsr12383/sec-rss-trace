@@ -15,7 +15,7 @@ RUN pip install --no-cache-dir --upgrade pip && \
 COPY *.py .
 
 # Ensure the Python script is executable (if needed)
-RUN chmod +x sc13_to_slack.py
+RUN chmod +x sec_bot.py
 
 # Command to run the application
-CMD ["python", "sc13_to_slack.py"]
+CMD ["python", "sec_bot.py"]
