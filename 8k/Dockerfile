@@ -12,12 +12,12 @@ RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of the application code into the container
-COPY ./8k/*.py ./8k/
+COPY ./8k/*.py .
 COPY *.py .
 COPY sc13/*.py ./sc13/
 
 # Ensure the Python script is executable (if needed)
-RUN chmod +x ./8k/8k.py
+RUN chmod +x ./8k.py
 
 # Command to run the application
-CMD ["python", "8k/8k.py"]
+CMD ["python", "./8k.py"]

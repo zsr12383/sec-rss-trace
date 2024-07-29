@@ -5,18 +5,18 @@ FROM python:3.10-slim
 WORKDIR /app
 
 # Copy the requirements file into the container
-COPY ../requirements.txt .
+COPY requirements.txt .
 
 # Install dependencies
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of the application code into the container
-COPY yahoo/*.py ./yahoo/
+COPY yahoo/*.py .
 COPY *.py .
 
 # Ensure the Python script is executable (if needed)
-RUN chmod +x ./yahoo/yahoo_bot.py
+RUN chmod +x ./yahoo_bot.py
 
 # Command to run the application
-CMD ["python", "yahoo/yahoo_bot.py"]
+CMD ["python", "./yahoo_bot.py"]
