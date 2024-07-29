@@ -36,7 +36,7 @@ jobs:
           context: .
           file: ./8k/Dockerfile
           push: true
-          tags: zsr12383/sc13-trace:latest
+          tags: zsr12383/8k:latest
 
       - name: Build and push Docker image yahoo
         uses: docker/build-push-action@v6
@@ -44,7 +44,7 @@ jobs:
           context: .
           file: ./yahoo/Dockerfile
           push: true
-          tags: zsr12383/sc13-trace:latest
+          tags: zsr12383/yahoo-bot:latest
 
       - name: create env file
         run: |

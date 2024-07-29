@@ -12,7 +12,7 @@ RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of the application code into the container
-COPY ./sc13/*.py ./sc13/*.py
+COPY ./sc13/*.py ./sc13/
 COPY *.py .
 
 # Ensure the Python script is executable (if needed)
