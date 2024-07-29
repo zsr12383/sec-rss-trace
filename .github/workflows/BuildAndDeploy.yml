@@ -25,21 +25,24 @@ jobs:
       - name: Build and push Docker image sc18
         uses: docker/build-push-action@v6
         with:
-          context: ./sc13
+          context: .
+          file: ./sc13/Dockerfile
           push: true
           tags: zsr12383/sc13-trace:latest
 
       - name: Build and push Docker image 8k
         uses: docker/build-push-action@v6
         with:
-          context: ./8k
+          context: .
+          file: ./8k/Dockerfile
           push: true
           tags: zsr12383/sc13-trace:latest
 
       - name: Build and push Docker image yahoo
         uses: docker/build-push-action@v6
         with:
-          context: ./yahoo
+          context: .
+          file: ./yahoo/Dockerfile
           push: true
           tags: zsr12383/sc13-trace:latest
 
