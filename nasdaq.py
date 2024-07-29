@@ -3,16 +3,17 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-from request import request_with_exception, send_to_slack
+from request_helper import Request_Helper
 
 spare_data = {'Apple', 'Adobe', 'Intuit', 'Cisco', 'Honeywell', 'Texas', 'NVIDIA', 'Microsoft', 'Automatic',
               'Intuitive', 'Cintas', 'Amgen', 'Mondelez', 'Amazon', 'Vertex', 'ASML', 'Palo', 'Ryanair', 'Gilead',
               'Meta', 'Starbucks', 'Regeneron', 'Alphabet', 'Booking', 'Costco', 'Netflix', 'T-Mobile', 'Micron', 'Lam',
-              'CME', 'Comcast', 'Advanced', 'AstraZeneca', 'Arm', 'Intel', 'KLA', 'Applied', 'Sanofi', 'MercadoLibre',
-              'QUALCOMM', 'Analog', 'PepsiCo', 'Equinix', 'Broadcom', 'Airbnb', 'Linde', 'PDD', 'Synopsys', 'Tesla'}
+              'CME', 'Comcast', 'AMD', 'Advanced Micro Device,' 'AstraZeneca', 'Arm', 'Intel', 'KLA', 'Applied',
+              'Sanofi', 'MercadoLibre', 'QUALCOMM', 'Analog', 'PepsiCo', 'Equinix', 'Broadcom', 'Airbnb', 'Linde',
+              'PDD', 'Synopsys', 'Tesla', 'Googl'}
 
 
-def get_nasdaq_stocks():
+def get_nasdaq_stocks(request_helper: Request_Helper):
     url = "https://api.nasdaq.com/api/screener/stocks"
     params = {
         "exchange": "NASDAQ",
@@ -21,14 +22,15 @@ def get_nasdaq_stocks():
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
     }
-    response = request_with_exception(url, params=params, headers=headers)
+    response = request_helper.request_with_exception(url, params=params, headers=headers)
     return response
 
 
-def get_nasdaq_top_stocks(len=50):
-    response = get_nasdaq_stocks()
+def get_nasdaq_top_stocks(len, request_helper: Request_Helper):
+    response = get_nasdaq_stocks(request_helper)
     if response is None:
-        send_to_slack('Since we are unable to get NASDAQ data, we run the process using pre-prepared data.')
+        request_helper.send_to_slack(
+            'Since we are unable to get NASDAQ data, we run the process using pre-prepared data.')
         logging.info('Since we are unable to get NASDAQ data, we run the process using pre-prepared data.')
         return spare_data
     nasdaq_stocks = response.json()['data']['rows']
@@ -38,4 +40,9 @@ def get_nasdaq_top_stocks(len=50):
     # Sort by market cap (descending) and select top 50
     top_list = df.sort_values('marketCap', ascending=False).head(len)
     first_words = set([stock['name'].split()[0].split('.')[0] for stock in top_list.to_dict('records')])
+    if "Advanced" in first_words:
+        first_words.remove("Advanced")
+        first_words.add("Advanced Micro Device")
+        first_words.add("AMD")
+    first_words.add("Googl")
     return first_words

@@ -8,14 +8,24 @@ services:
     environment:
       - TZ=Asia/Seoul
     restart: always
-    command: python sec_bot.py sc13
-  merger-trace:
-    image: zsr12383/sc13-trace:latest
-    container_name: merger-trace
+    command: python sc13/sc13_bot.py
+  8k-trace:
+    image: zsr12383/8k:latest
+    container_name: 8k-trace
     volumes:
       - ./.env:/app/.env
     network_mode: "host"
     environment:
       - TZ=Asia/Seoul
     restart: always
-    command: python sec_bot.py merge
+    command: python 8k/8k.py
+  yahoo-trace:
+    image: zsr12383/yahoo-bot:latest
+    container_name: yahoo-trace
+    volumes:
+      - ./.env:/app/.env
+    network_mode: "host"
+    environment:
+      - TZ=Asia/Seoul
+    restart: always
+    command: python yahoo/yahoo_bot.py
