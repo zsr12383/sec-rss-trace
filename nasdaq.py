@@ -5,7 +5,7 @@ logger = logging.getLogger(__name__)
 
 from request_helper import Request_Helper
 
-spare_data = {'Apple', 'Adobe', 'Intuit', 'Cisco', 'Honeywell', 'Texas', 'NVIDIA', 'Microsoft', 'Automatic',
+spare_data = {'Apple', 'Adobe', 'Intuit', 'Cisco', 'Honeywell', 'Texas Instrument', 'NVIDIA', 'Microsoft', 'Automatic',
               'Intuitive', 'Cintas', 'Amgen', 'Mondelez', 'Amazon', 'Vertex', 'ASML', 'Palo', 'Ryanair', 'Gilead',
               'Meta', 'Starbucks', 'Regeneron', 'Alphabet', 'Booking', 'Costco', 'Netflix', 'T-Mobile', 'Micron', 'Lam',
               'CME', 'Comcast', 'AMD', 'Advanced Micro Device,' 'AstraZeneca', 'Arm', 'Intel', 'KLA', 'Applied',
@@ -44,5 +44,8 @@ def get_nasdaq_top_stocks(len, request_helper: Request_Helper):
         first_words.remove("Advanced")
         first_words.add("Advanced Micro Device")
         first_words.add("AMD")
+    if "Texas" in first_words:
+        first_words.remove("Texas")
+        first_words.add("Texas Instrument")
     first_words.add("Googl")
     return first_words
