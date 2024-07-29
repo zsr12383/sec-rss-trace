@@ -20,7 +20,7 @@ class SC13_bot(RSS_bot):
     def __init__(self, keywords, rss_url, request: Request_Helper):
         super(SC13_bot, self).__init__(keywords, rss_url, request)
         self.eastern = pytz.timezone('US/Eastern')
-        self.last_updated = (datetime.now(self.eastern) - timedelta(hours=144)).strftime('%Y-%m-%dT%H:%M:%S-04:00')
+        self.last_updated = (datetime.now(self.eastern) - timedelta(hours=2)).strftime('%Y-%m-%dT%H:%M:%S-04:00')
         self.base_url = 'https://www.sec.gov'
 
     def is_new_doc(self, entry):
