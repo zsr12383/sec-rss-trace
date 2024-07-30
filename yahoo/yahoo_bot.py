@@ -7,6 +7,7 @@ from request_helper import Request_Helper
 import xml.etree.ElementTree as ET
 import logging
 import time
+import re
 
 logging.basicConfig(filename='app.log', level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s')
@@ -40,7 +41,8 @@ class Yahoo_bot(RSS_bot):
                                  article_body.find_all(
                                      ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ol', 'ul', 'li'])]).lower()
         for keyword in self.keywords:
-            if keyword in article_text:
+            pattern = fr'\b{keyword}\b'
+            if re.search(pattern, article_text, re.IGNORECASE):
                 return keyword
         return None
 

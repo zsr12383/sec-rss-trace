@@ -10,7 +10,7 @@ spare_data = {'Apple', 'Adobe', 'Intuit', 'Cisco', 'Honeywell', 'Texas Instrumen
               'Meta', 'Starbucks', 'Regeneron', 'Alphabet', 'Booking', 'Costco', 'Netflix', 'T-Mobile', 'Micron', 'Lam',
               'CME', 'Comcast', 'AMD', 'Advanced Micro Device,' 'AstraZeneca', 'Arm', 'Intel', 'KLA', 'Applied',
               'Sanofi', 'MercadoLibre', 'QUALCOMM', 'Analog', 'PepsiCo', 'Equinix', 'Broadcom', 'Airbnb', 'Linde',
-              'PDD', 'Synopsys', 'Tesla', 'Googl'}
+              'PDD', 'Synopsys', 'Tesla', 'Google', 'Googl'}
 
 
 def get_nasdaq_stocks(request_helper: Request_Helper):

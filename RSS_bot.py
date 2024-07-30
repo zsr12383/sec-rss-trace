@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 import feedparser
-
+import re
 from request_helper import Request_Helper
 
 
@@ -12,11 +12,11 @@ class RSS_bot():
         request.send_to_slack("process start")
 
     def find_contain_keyword(self, doc):
-        for tag in doc.find_all():
-            text = tag.get_text().lower()
-            for keyword in self.keywords:
-                if keyword in text:
-                    return keyword
+        text = ' '.join([element.get_text() for element in doc.find_all()]).lower()
+        for keyword in self.keywords:
+            pattern = fr'\b{keyword}\b'
+            if re.search(pattern, text, re.IGNORECASE):
+                return keyword
         return None
 
     def get_entries(self):
