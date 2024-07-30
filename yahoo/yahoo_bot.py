@@ -33,6 +33,17 @@ class Yahoo_bot(RSS_bot):
         message = f"New entry found:\n\tTitle: {entry['title']}\n\tLink: {entry['link']}\n\tKeyword: {keyword}"
         self.request.send_to_slack(message)
 
+    def find_contain_keyword(self, doc):
+        article_body = doc.find('div', {'class': 'caas-body'})
+        if article_body is None: return None
+        article_text = ' '.join([element.get_text() for element in
+                                 article_body.find_all(
+                                     ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ol', 'ul', 'li'])]).lower()
+        for keyword in self.keywords:
+            if keyword in article_text:
+                return keyword
+        return None
+
     def do_entry_process(self, entry):
         time.sleep(0.2)
         response = self.request.request_with_exception(entry['link'])

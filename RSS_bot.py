@@ -6,14 +6,14 @@ from request_helper import Request_Helper
 
 class RSS_bot():
     def __init__(self, keywords, rss_url, request: Request_Helper):
-        self.keywords = keywords
+        self.keywords = [keyword.lower() for keyword in keywords]
         self.rss_url = rss_url
         self.request = request
         request.send_to_slack("process start")
 
     def find_contain_keyword(self, doc):
         for tag in doc.find_all():
-            text = tag.get_text()
+            text = tag.get_text().lower()
             for keyword in self.keywords:
                 if keyword in text:
                     return keyword

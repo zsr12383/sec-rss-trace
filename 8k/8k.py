@@ -58,7 +58,9 @@ if __name__ == '__main__':
     logging.info("process start")
     request_helper = Request_Helper(get_slack_webhook_merge_url())
     eightk_rss_url = 'https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&CIK=&type=8-K&company=&dateb=&owner=include&start=0&count=40&output=atom'
-    eightk_bot = EightK_bot(get_nasdaq_top_stocks(50, request_helper), eightk_rss_url, request_helper)
+    eightk_bot = EightK_bot(
+        get_nasdaq_top_stocks(50, request_helper).union({'M&A', 'Acquisition', 'Merger', 'Takeover'}), eightk_rss_url,
+        request_helper)
     schedule.every(2).minutes.do(eightk_bot.check_rss_feed)
     while True:
         schedule.run_pending()
