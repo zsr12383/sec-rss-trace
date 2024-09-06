@@ -48,4 +48,5 @@ def get_nasdaq_top_stocks(len, request_helper: Request_Helper):
         first_words.remove("Texas")
         first_words.add("Texas Instrument")
     first_words.add("Googl")
+    first_words.add("Google")
     return first_words

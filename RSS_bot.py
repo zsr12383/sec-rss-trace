@@ -13,11 +13,12 @@ class RSS_bot():
 
     def find_contain_keyword(self, doc):
         text = ' '.join([element.get_text() for element in doc.find_all()]).lower()
+        ret = []
         for keyword in self.keywords:
             pattern = fr'\b{keyword}\b'
             if re.search(pattern, text, re.IGNORECASE):
-                return keyword
-        return None
+                ret.append(keyword)
+        return ret
 
     def get_entries(self):
         response = self.request.request_with_exception(self.rss_url)
@@ -32,15 +33,15 @@ class RSS_bot():
         except Exception as e:
             return None
 
-    def send_to_slack_keyword(self, entry, keyword):
-        message = f"New entry found:\n\tTitle: {entry.title}\n\tLink: {entry.link}\n\tUpdated: {entry.updated}\n\tKeyword: {keyword}"
+    def send_to_slack_keyword(self, entry, keywords):
+        message = f"New entry found:\n\tTitle: {entry.title}\n\tLink: {entry.link}\n\tUpdated: {entry.updated}\n\tKeyword: {keywords}"
         self.request.send_to_slack(message)
 
     def do_entries_process(self, entries):
         for entry in entries:
-            contain_keyword = self.find_contain_keyword(entry.link)
-            if not contain_keyword: continue
-            self.send_to_slack_keyword(entry, contain_keyword)
+            contain_keywords = self.find_contain_keyword(entry.link)
+            if len(contain_keywords) == 0: continue
+            self.send_to_slack_keyword(entry, contain_keywords)
 
     def check_rss_feed(self):
         try:
