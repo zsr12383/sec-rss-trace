@@ -4,13 +4,14 @@ import logging
 logger = logging.getLogger(__name__)
 
 from request_helper import Request_Helper
+from yahoo_keyword import get_yahoo_keywords
 
 spare_data = {'Apple', 'Adobe', 'Intuit', 'Cisco', 'Honeywell', 'Texas Instrument', 'NVIDIA', 'Microsoft', 'Automatic',
               'Intuitive', 'Cintas', 'Amgen', 'Mondelez', 'Amazon', 'Vertex', 'ASML', 'Palo', 'Ryanair', 'Gilead',
               'Meta', 'Starbucks', 'Regeneron', 'Alphabet', 'Booking', 'Costco', 'Netflix', 'T-Mobile', 'Micron', 'Lam',
               'CME', 'Comcast', 'AMD', 'Advanced Micro Device,' 'AstraZeneca', 'Arm', 'Intel', 'KLA', 'Applied',
               'Sanofi', 'MercadoLibre', 'QUALCOMM', 'Analog', 'PepsiCo', 'Equinix', 'Broadcom', 'Airbnb', 'Linde',
-              'PDD', 'Synopsys', 'Tesla', 'Google', 'Googl'}
+              'PDD', 'Synopsys', 'Tesla', 'Google', 'Googl'}.union(get_yahoo_keywords())
 
 
 def get_nasdaq_stocks(request_helper: Request_Helper):
@@ -49,4 +50,5 @@ def get_nasdaq_top_stocks(len, request_helper: Request_Helper):
         first_words.add("Texas Instrument")
     first_words.add("Googl")
     first_words.add("Google")
+    first_words.union(get_yahoo_keywords())
     return first_words

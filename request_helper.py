@@ -35,9 +35,9 @@ class Request_Helper():
         logging.info(self.generate_log_msg(url, method, 'Request Start'))
         headers = self.headers if headers is None else headers
         try:
-            if (method == Method.GET.value):
+            if method == Method.GET.value:
                 response = requests.get(url, headers=headers, params=params, timeout=(5, 10))
-            elif (method == Method.POST.value):
+            elif method == Method.POST.value:
                 response = requests.post(url, headers=headers, params=params, timeout=(5, 10), json=json)
             response.raise_for_status()
             logging.info(self.generate_log_msg(url, method, 'Request End'))
