@@ -36,11 +36,12 @@ class Yahoo_bot(RSS_bot):
 
     def find_contain_keyword(self, doc):
         article_body = doc.find('div', {'class': 'caas-body'})
-        if article_body is None: return None
+        ret = []
+        if article_body is None: return ret
+
         article_text = ' '.join([element.get_text() for element in
                                  article_body.find_all(
                                      ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ol', 'ul', 'li'])]).lower()
-        ret = []
         for keyword in self.keywords:
             pattern = fr'\b{keyword}\b'
             if re.search(pattern, article_text, re.IGNORECASE):
@@ -53,14 +54,16 @@ class Yahoo_bot(RSS_bot):
         if response is None: return
         doc = BeautifulSoup(response.text, 'html.parser')
         contain_keywords = self.find_contain_keyword(doc)
-        if len(contain_keywords) == 0 or (
-                len(contain_keywords) == 1 and contain_keywords[0] in get_magnificent()): return
+        if len(contain_keywords) == 0 or self.all_contained_magnificent(contain_keywords): return
         self.send_to_slack_keyword(entry, contain_keywords)
 
     def do_entries_process(self, entries):
         for title, link in entries:
             entry = {'title': title, 'link': link}
             self.do_entry_process(entry)
+
+    def all_contained_magnificent(self, keywords):
+        return set(keywords).issubset(get_magnificent())
 
 
 if __name__ == '__main__':
