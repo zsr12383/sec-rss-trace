@@ -36,10 +36,6 @@ class YahooBot(RssBot):
         response = self.request.request_with_exception(self.rss_url)
         current_items = set(parse_rss(response.content))
         new_items = current_items - self.last_items
-
-        print(current_items)
-        print(self.last_items)
-        print(new_items)
         self.last_items = self.last_items.union(new_items)
 
         current_time = datetime.now(timezone.utc)
@@ -89,7 +85,7 @@ if __name__ == '__main__':
     request_helper = Request_Helper(get_slack_webhook_yahoo_url())
     yahoo_rss_url = 'https://finance.yahoo.com/rss/topstories'
     yahoo_bot = YahooBot(get_yahoo_keywords().union(get_magnificent()), yahoo_rss_url, request_helper)
-    schedule.every(30).seconds.do(yahoo_bot.check_rss_feed)
+    schedule.every(3).minutes.do(yahoo_bot.check_rss_feed)
     while True:
         schedule.run_pending()
         time.sleep(1)
