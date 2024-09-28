@@ -66,7 +66,7 @@ class YahooBot(RssBot):
         self.send_to_slack_keyword(entry, contain_keywords)
 
     def do_entries_process(self, entries):
-        for title, link in entries:
+        for title, link, _ in entries:
             entry = {'title': title, 'link': link}
             self.do_entry_process(entry)
 
@@ -79,7 +79,6 @@ if __name__ == '__main__':
     request_helper = Request_Helper(get_slack_webhook_yahoo_url())
     yahoo_rss_url = 'https://finance.yahoo.com/rss/topstories'
     yahoo_bot = YahooBot(get_yahoo_keywords().union(get_magnificent()), yahoo_rss_url, request_helper)
-    yahoo_bot.check_rss_feed()
     schedule.every(3).minutes.do(yahoo_bot.check_rss_feed)
     while True:
         schedule.run_pending()
