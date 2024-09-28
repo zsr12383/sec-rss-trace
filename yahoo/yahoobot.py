@@ -14,10 +14,17 @@ logging.basicConfig(filename='app.log', level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
 
+# .replace(tzinfo=timezone.utc) 이게 없으면 문제가 발생함
 def parse_rss(content):
     root = ET.fromstring(content)
     items = root.findall(".//item")
-    return [(item.find("title").text, item.find("link").text, item.find("pubDate").text) for item in items]
+    return [(item.find("title").text, item.find("link").text,
+             datetime.strptime(item.find("pubDate").text, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)) for item
+            in items]
+
+
+def all_contained_magnificent(keywords):
+    return set(keywords).issubset(get_magnificent())
 
 
 class YahooBot(RssBot):
@@ -29,13 +36,15 @@ class YahooBot(RssBot):
         response = self.request.request_with_exception(self.rss_url)
         current_items = set(parse_rss(response.content))
         new_items = current_items - self.last_items
-        self.last_items.union(current_items)
+        self.last_items = self.last_items.union(new_items)
 
         current_time = datetime.now(timezone.utc)
         time_threshold = current_time - timedelta(days=1)
-        self.last_items = {item for item in self.last_items if
-                           datetime.strptime(item[2], "%Y-%m-%dT%H:%M:%SZ") > time_threshold}
-
+        filtered_items = filter(
+            lambda item: item[2] > time_threshold,
+            self.last_items
+        )
+        self.last_items = set(filtered_items)
         return new_items
 
     def send_to_slack_keyword(self, entry, keywords):
@@ -62,16 +71,13 @@ class YahooBot(RssBot):
         if response is None: return
         doc = BeautifulSoup(response.text, 'html.parser')
         contain_keywords = self.find_contain_keyword(doc)
-        if len(contain_keywords) == 0 or self.all_contained_magnificent(contain_keywords): return
+        if len(contain_keywords) == 0 or all_contained_magnificent(contain_keywords): return
         self.send_to_slack_keyword(entry, contain_keywords)
 
     def do_entries_process(self, entries):
         for title, link, _ in entries:
             entry = {'title': title, 'link': link}
             self.do_entry_process(entry)
-
-    def all_contained_magnificent(self, keywords):
-        return set(keywords).issubset(get_magnificent())
 
 
 if __name__ == '__main__':
