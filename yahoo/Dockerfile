@@ -16,7 +16,7 @@ COPY yahoo/*.py .
 COPY *.py .
 
 # Ensure the Python script is executable (if needed)
-RUN chmod +x ./yahoo_bot.py
+RUN chmod +x ./yahoobot.py
 
 # Command to run the application
-CMD ["python", "./yahoo_bot.py"]
+CMD ["python", "./yahoobot.py"]

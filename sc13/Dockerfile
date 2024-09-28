@@ -16,7 +16,7 @@ COPY ./sc13/*.py .
 COPY *.py .
 
 # Ensure the Python script is executable (if needed)
-RUN chmod +x ./sc13_bot.py
+RUN chmod +x ./sc13bot.py
 
 # Command to run the application
-CMD ["python", "./sc13_bot.py"]
+CMD ["python", "./sc13bot.py"]

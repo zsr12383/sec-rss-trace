@@ -8,7 +8,7 @@ services:
     environment:
       - TZ=Asia/Seoul
     restart: always
-    command: python ./sc13_bot.py
+    command: python ./sc13bot.py
   8k-trace:
     image: zsr12383/8k:latest
     container_name: 8k-trace
@@ -28,4 +28,4 @@ services:
     environment:
       - TZ=Asia/Seoul
     restart: always
-    command: python ./yahoo_bot.py
+    command: python ./yahoobot.py
