@@ -4,7 +4,7 @@ import re
 from request_helper import Request_Helper
 
 
-class RSS_bot():
+class RssBot():
     def __init__(self, keywords, rss_url, request: Request_Helper):
         self.keywords = [keyword.lower() for keyword in keywords]
         self.rss_url = rss_url
