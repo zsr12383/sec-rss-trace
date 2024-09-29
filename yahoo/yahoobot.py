@@ -95,17 +95,21 @@ class YahooBot(RssBot):
                          article_body.find_all(
                              ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ol', 'ul', 'li'])]).lower()
         text = text + self.groq_msg
-        chat_completion = self.groq_client.chat.completions.create(
-            messages=[
-                {
-                    "role": "user",
-                    "content": text
-                }
-            ],
-            model="llama-3.1-70b-versatile"
-        )
-        res = chat_completion.choices[0].message.content
-        if res and not res.startswith('0'): return res[0]
+
+        try:
+            chat_completion = self.groq_client.chat.completions.create(
+                messages=[
+                    {
+                        "role": "user",
+                        "content": text
+                    }
+                ],
+                model="llama-3.1-70b-versatile"
+            )
+            res = chat_completion.choices[0].message.content
+            if res and not res.startswith('0'): return res[0]
+        except Exception as e:
+            logging.error(e)
         return False
 
 

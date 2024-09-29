@@ -58,17 +58,21 @@ class EightKBot(Sc13Bot):
     def check_signal_by_groq(self, doc):
         text = ' '.join([element.get_text() for element in doc.find_all()]).lower()
         text = text + self.groq_msg
-        chat_completion = self.groq_client.chat.completions.create(
-            messages=[
-                {
-                    "role": "user",
-                    "content": text
-                }
-            ],
-            model="llama-3.1-70b-versatile"
-        )
-        res = chat_completion.choices[0].message.content
-        if res and not res.startswith('0'): return res[0]
+
+        try:
+            chat_completion = self.groq_client.chat.completions.create(
+                messages=[
+                    {
+                        "role": "user",
+                        "content": text
+                    }
+                ],
+                model="llama-3.1-70b-versatile"
+            )
+            res = chat_completion.choices[0].message.content
+            if res and not res.startswith('0'): return res[0]
+        except Exception as e:
+            logging.error(e)
         return False
 
 
