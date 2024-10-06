@@ -12,9 +12,6 @@ import time
 import re
 from datetime import datetime, timedelta, timezone
 
-logging.basicConfig(filename='app.log', level=logging.INFO,
-                    format='%(asctime)s - %(levelname)s - %(message)s')
-
 
 # .replace(tzinfo=timezone.utc) 이게 없으면 문제가 발생함
 def parse_rss(content):

@@ -10,9 +10,7 @@ from nasdaq import get_nasdaq_top_stocks
 from request_helper import Request_Helper
 from sc13.sc13bot import Sc13Bot
 from groq import Groq
-
-logging.basicConfig(filename='app.log', level=logging.INFO,
-                    format='%(asctime)s - %(levelname)s - %(message)s')
+import logging_config
 
 
 class EightKBot(Sc13Bot):

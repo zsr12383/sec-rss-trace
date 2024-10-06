@@ -8,12 +8,10 @@ from RssBot import RssBot
 from get_env import get_slack_webhook_url
 from nasdaq import get_nasdaq_top_stocks
 from bs4 import BeautifulSoup
+import logging_config
 import logging
 
 from request_helper import Request_Helper
-
-logging.basicConfig(filename='app.log', level=logging.INFO,
-                    format='%(asctime)s - %(levelname)s - %(message)s')
 
 
 class Sc13Bot(RssBot):

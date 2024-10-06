@@ -4,6 +4,7 @@ services:
     container_name: sc13-trace
     volumes:
       - ./.env:/app/.env
+      - ./logs/sc13:/app/logs
     network_mode: "host"
     environment:
       - TZ=Asia/Seoul
@@ -14,6 +15,7 @@ services:
     container_name: 8k-trace
     volumes:
       - ./.env:/app/.env
+      - ./logs/8k:/app/logs
     network_mode: "host"
     environment:
       - TZ=Asia/Seoul
@@ -24,6 +26,7 @@ services:
     container_name: yahoo-trace
     volumes:
       - ./.env:/app/.env
+      - ./logs/yahoo:/app/logs
     network_mode: "host"
     environment:
       - TZ=Asia/Seoul

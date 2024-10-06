@@ -2,7 +2,8 @@ from bs4 import BeautifulSoup
 import feedparser
 import re
 from request_helper import Request_Helper
-
+import logging_config
+import logging
 
 class RssBot():
     def __init__(self, keywords, rss_url, request: Request_Helper):
@@ -47,5 +48,6 @@ class RssBot():
         try:
             entries = self.get_entries()
         except Exception as e:
+            logging.error(e)
             return
         self.do_entries_process(entries)
