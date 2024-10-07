@@ -15,8 +15,8 @@ from request_helper import Request_Helper
 
 
 class Sc13Bot(RssBot):
-    def __init__(self, keywords, rss_url, request: Request_Helper):
-        super().__init__(keywords, rss_url, request)
+    def __init__(self, keywords, rss_url, request_helper: Request_Helper):
+        super().__init__(keywords, rss_url, request_helper)
         self.eastern = pytz.timezone('US/Eastern')
         self.last_updated = (datetime.now(self.eastern) - timedelta(hours=2)).strftime('%Y-%m-%dT%H:%M:%S-04:00')
         self.base_url = 'https://www.sec.gov'
@@ -26,7 +26,7 @@ class Sc13Bot(RssBot):
 
     def do_entry_process(self, entry):
         time.sleep(0.4)
-        response = self.request.request_with_exception(entry.link)
+        response = self.request_helper.request_with_exception(entry.link)
         if response is None: return
         doc = BeautifulSoup(response.text, 'html.parser')
         contain_keyword = self.find_contain_keyword(doc)

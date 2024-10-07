@@ -10,12 +10,13 @@ from nasdaq import get_nasdaq_top_stocks
 from request_helper import Request_Helper
 from sc13.sc13bot import Sc13Bot
 from groq import Groq
+from GroqHelper import GroqHelper
 import logging_config
 
 
 class EightKBot(Sc13Bot):
-    def __init__(self, keywords, rss_url, request: Request_Helper, groq_client: Groq):
-        super().__init__(keywords, rss_url, request)
+    def __init__(self, keywords, rss_url, request_helper_instance: Request_Helper, groq_client: Groq):
+        super().__init__(keywords, rss_url, request_helper_instance)
         self.groq_client = groq_client
         self.groq_msg = get_groq_message()
 
@@ -29,12 +30,12 @@ class EightKBot(Sc13Bot):
         href = link['href'] if link else None
         full_url = urljoin(self.base_url, href) if href else None
         full_url = full_url.replace("ix?doc=/", "", 1)
-        response = self.request.request_with_exception(full_url)
+        response = self.request_helper.request_with_exception(full_url)
         return BeautifulSoup(response.text, 'html.parser')
 
     def do_entry_process(self, entry):
         time.sleep(0.5)
-        response = self.request.request_with_exception(entry.link)
+        response = self.request_helper.request_with_exception(entry.link)
         if response is None: return
         doc = BeautifulSoup(response.text, 'html.parser')
         try:
@@ -42,12 +43,12 @@ class EightKBot(Sc13Bot):
             doc = self.extract_8_k_doc(doc)
         except Exception as e:
             logging.error(e)
-            self.request.send_to_slack(str(e))
+            self.request_helper.send_to_slack(str(e))
             return
 
         if signum := self.check_signal_by_groq(doc):
-            self.send_to_slack_keyword(entry, f"groq signal${signum}")
-            return
+
+            # self.send_to_slack_keyword(entry, f"groq signal{signum}")
 
         contain_keyword = self.find_contain_keyword(doc)
         if not contain_keyword: return
@@ -55,23 +56,7 @@ class EightKBot(Sc13Bot):
 
     def check_signal_by_groq(self, doc):
         text = ' '.join([element.get_text() for element in doc.find_all()]).lower()
-        text = text + self.groq_msg
-
-        try:
-            chat_completion = self.groq_client.chat.completions.create(
-                messages=[
-                    {
-                        "role": "user",
-                        "content": text
-                    }
-                ],
-                model="llama-3.1-70b-versatile"
-            )
-            res = chat_completion.choices[0].message.content
-            if res and not res.startswith('0'): return res[0]
-        except Exception as e:
-            logging.error(e)
-        return False
+        return GroqHelper.ask_groq(text, self.groq_msg, self.groq_client, self.request_helper)
 
 
 if __name__ == '__main__':
@@ -81,7 +66,7 @@ if __name__ == '__main__':
     eight_k_bot = EightKBot(
         get_nasdaq_top_stocks(50, request_helper).union({'M&A', 'Acquisition', 'Merger', 'Takeover'}), eight_k_rss_url,
         request_helper, Groq(api_key=get_groq_api_key()))
-    schedule.every(2).minutes.do(eight_k_bot.check_rss_feed)
+    schedule.every(3).minutes.do(eight_k_bot.check_rss_feed)
     while True:
         schedule.run_pending()
         time.sleep(1)

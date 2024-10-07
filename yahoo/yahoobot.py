@@ -34,7 +34,7 @@ class YahooBot(RssBot):
         self.groq_msg = get_groq_message()
 
     def get_entries(self):
-        response = self.request.request_with_exception(self.rss_url)
+        response = self.request_helper.request_with_exception(self.rss_url)
         current_items = set(parse_rss(response.content))
         new_items = current_items - self.last_items
         self.last_items = self.last_items.union(new_items)
@@ -50,7 +50,7 @@ class YahooBot(RssBot):
 
     def send_to_slack_keyword(self, entry, keywords):
         message = f"New entry found:\n\tTitle: {entry['title']}\n\tLink: {entry['link']}\n\tKeyword: {keywords}"
-        self.request.send_to_slack(message)
+        self.request_helper.send_to_slack(message)
 
     def find_contain_keyword(self, doc):
         article_body = doc.find('div', {'class': 'caas-body'})
@@ -68,7 +68,7 @@ class YahooBot(RssBot):
 
     def do_entry_process(self, entry):
         time.sleep(0.2)
-        response = self.request.request_with_exception(entry['link'])
+        response = self.request_helper.request_with_exception(entry['link'])
         if response is None: return
         doc = BeautifulSoup(response.text, 'html.parser')
 
@@ -107,6 +107,7 @@ class YahooBot(RssBot):
             if res and not res.startswith('0'): return res[0]
         except Exception as e:
             logging.error(e)
+            self.request_helper.send_to_slack(str(e))
         return False
 
 
