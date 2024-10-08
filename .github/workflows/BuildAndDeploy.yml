@@ -65,7 +65,7 @@ jobs:
         uses: burnett01/rsync-deployments@7.0.1
         with:
           path: ./deploy
-          switches: -avzr --delete
+          switches: -avzr --delete --exclude 'deploy/logs/'
           remote_path: ~/work/sc13/
           remote_host: ${{ secrets.HOST }}
           remote_user: ubuntu
