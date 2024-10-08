@@ -11,11 +11,11 @@ from bs4 import BeautifulSoup
 import logging_config
 import logging
 
-from request_helper import Request_Helper
+from requesthelper import RequestHelper
 
 
 class Sc13Bot(RssBot):
-    def __init__(self, keywords, rss_url, request_helper: Request_Helper):
+    def __init__(self, keywords, rss_url, request_helper: RequestHelper):
         super().__init__(keywords, rss_url, request_helper)
         self.eastern = pytz.timezone('US/Eastern')
         self.last_updated = (datetime.now(self.eastern) - timedelta(hours=2)).strftime('%Y-%m-%dT%H:%M:%S-04:00')
@@ -42,7 +42,7 @@ class Sc13Bot(RssBot):
 
 if __name__ == '__main__':
     logging.info("process start")
-    request_helper = Request_Helper(get_slack_webhook_url())
+    request_helper = RequestHelper(get_slack_webhook_url())
     sc13_rss_url = 'https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&CIK=&type=sc%2013&company=&dateb=&owner=include&start=0&count=40&output=atom'
     sc13_bot = Sc13Bot(get_nasdaq_top_stocks(50, request_helper), sc13_rss_url, request_helper)
     schedule.every(2).minutes.do(sc13_bot.check_rss_feed)

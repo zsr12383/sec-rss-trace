@@ -1,20 +1,19 @@
 from bs4 import BeautifulSoup
 import feedparser
 import re
-from request_helper import Request_Helper
+from requesthelper import RequestHelper
 import logging_config
 import logging
 
 
-class RssBot():
-    def __init__(self, keywords, rss_url, request_helper: Request_Helper):
+class RssBot:
+    def __init__(self, keywords, rss_url, request_helper: RequestHelper):
         self.keywords = [keyword.lower() for keyword in keywords]
         self.rss_url = rss_url
         self.request_helper = request_helper
         request_helper.send_to_slack("process start")
 
-    def find_contain_keyword(self, doc):
-        text = ' '.join([element.get_text() for element in doc.find_all()]).lower()
+    def find_contain_keyword(self, text):
         ret = []
         for keyword in self.keywords:
             pattern = fr'\b{keyword}\b'
@@ -36,7 +35,7 @@ class RssBot():
             return None
 
     def send_to_slack_keyword(self, entry, keywords):
-        message = f"New entry found:\n\tTitle: {entry.title}\n\tLink: {entry.link}\n\tUpdated: {entry.updated}\n\tKeyword: {keywords}"
+        message = f"New entry found:\n\tTitle: {entry.title}\n\tLink: {entry.link}\n\tKeyword: {keywords}"
         self.request_helper.send_to_slack(message)
 
     def do_entries_process(self, entries):

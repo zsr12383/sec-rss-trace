@@ -2,10 +2,11 @@ import schedule
 from bs4 import BeautifulSoup
 from groq import Groq
 
+from GroqHelper import GroqHelper
 from RssBot import RssBot
 from get_env import get_slack_webhook_yahoo_url, get_groq_api_key, get_groq_message
 from yahoo_keyword import get_yahoo_keywords, get_magnificent
-from request_helper import Request_Helper
+from requesthelper import RequestHelper
 import xml.etree.ElementTree as ET
 import logging
 import time
@@ -27,7 +28,7 @@ def all_contained_magnificent(keywords):
 
 
 class YahooBot(RssBot):
-    def __init__(self, keywords, rss_url, request: Request_Helper, groq_client: Groq):
+    def __init__(self, keywords, rss_url, request: RequestHelper, groq_client: Groq):
         super().__init__(keywords, rss_url, request)
         self.last_items = set()
         self.groq_client = groq_client
@@ -72,13 +73,16 @@ class YahooBot(RssBot):
         if response is None: return
         doc = BeautifulSoup(response.text, 'html.parser')
 
-        if signum := self.check_signal_by_groq(doc):
-            self.send_to_slack_keyword(entry, f"groq signal{signum}")
-            return
+        groq_answer = self.check_signal_by_groq(doc)
+        contain_keyword = self.find_contain_keyword(doc)
 
-        contain_keywords = self.find_contain_keyword(doc)
-        if len(contain_keywords) == 0 or all_contained_magnificent(contain_keywords): return
-        self.send_to_slack_keyword(entry, contain_keywords)
+        msg = RequestHelper.generate_message_body(entry)
+        if groq_answer is not None and not groq_answer.startswith('0'):
+            msg = RequestHelper.add_message(msg, "groq_answer", groq_answer)
+        if contain_keyword:
+            msg = RequestHelper.add_message(msg, "keywords", str(contain_keyword))
+        if msg == RequestHelper.generate_message_body(entry): return
+        self.request_helper.send_to_slack(msg)
 
     def do_entries_process(self, entries):
         for title, link, _ in entries:
@@ -87,33 +91,17 @@ class YahooBot(RssBot):
 
     def check_signal_by_groq(self, doc):
         article_body = doc.find('div', {'class': 'caas-body'})
-        if article_body is None: return False
+        if article_body is None: return None
         text = ' '.join([element.get_text() for element in
                          article_body.find_all(
                              ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ol', 'ul', 'li'])]).lower()
-        text = text + self.groq_msg
-
-        try:
-            chat_completion = self.groq_client.chat.completions.create(
-                messages=[
-                    {
-                        "role": "user",
-                        "content": text
-                    }
-                ],
-                model="llama-3.1-70b-versatile"
-            )
-            res = chat_completion.choices[0].message.content
-            if res and not res.startswith('0'): return res[0]
-        except Exception as e:
-            logging.error(e)
-            self.request_helper.send_to_slack(str(e))
-        return False
+        logging.info(text)
+        return GroqHelper.ask_groq(text, self.groq_msg, self.groq_client, self.request_helper)
 
 
 if __name__ == '__main__':
     logging.info("process start")
-    request_helper = Request_Helper(get_slack_webhook_yahoo_url())
+    request_helper = RequestHelper(get_slack_webhook_yahoo_url())
     yahoo_rss_url = 'https://finance.yahoo.com/rss/topstories'
     yahoo_bot = YahooBot(get_yahoo_keywords().union(get_magnificent()), yahoo_rss_url, request_helper,
                          Groq(api_key=get_groq_api_key()))

@@ -3,7 +3,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-from request_helper import Request_Helper
+from requesthelper import RequestHelper
 from yahoo_keyword import get_yahoo_keywords
 
 spare_data = {'Apple', 'Adobe', 'Intuit', 'Cisco', 'Honeywell', 'Texas Instrument', 'NVIDIA', 'Microsoft', 'Automatic',
@@ -14,7 +14,7 @@ spare_data = {'Apple', 'Adobe', 'Intuit', 'Cisco', 'Honeywell', 'Texas Instrumen
               'PDD', 'Synopsys', 'Tesla', 'Google', 'Googl'}.union(get_yahoo_keywords())
 
 
-def get_nasdaq_stocks(request_helper: Request_Helper):
+def get_nasdaq_stocks(request_helper: RequestHelper):
     url = "https://api.nasdaq.com/api/screener/stocks"
     params = {
         "exchange": "NASDAQ",
@@ -27,7 +27,7 @@ def get_nasdaq_stocks(request_helper: Request_Helper):
     return response
 
 
-def get_nasdaq_top_stocks(len, request_helper: Request_Helper):
+def get_nasdaq_top_stocks(len, request_helper: RequestHelper):
     response = get_nasdaq_stocks(request_helper)
     if response is None:
         request_helper.send_to_slack(

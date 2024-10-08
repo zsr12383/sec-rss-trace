@@ -1,6 +1,6 @@
 #!/bin/bash
 
-COMPOSE_FILE="docker-compose.yml"
+COMPOSE_FILE="test/docker-compose.yml"
 
 # 도커 컴포즈 인자에 따라 동작 수행
 if [ "$1" == "up" ]; then
