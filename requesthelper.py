@@ -51,7 +51,7 @@ class RequestHelper:
 
     @staticmethod
     def add_message(message: str, key: str, to_add: str) -> str:
-        return message + f'\n\t{key}: t{to_add}'
+        return message + f'\n\t{key}: {to_add}'
 
     def request_with_exception(self, url, method=Method.GET.value, params=None, json=None, headers=None):
         logging.info(generate_log_msg(url, method, 'Request Start'))

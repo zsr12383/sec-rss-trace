@@ -11,7 +11,7 @@ from requesthelper import RequestHelper
 class GroqHelper():
     @staticmethod
     def ask_groq(text: str, groq_msg: str, groq_client: Groq, request_helper: RequestHelper):
-        new_text = groq_msg + "\n\n\n" + text + "\tabc" * 30000
+        new_text = groq_msg + "\n\n\n" + text
         for i in range(3):
             try:
                 chat_completion = groq_client.chat.completions.create(

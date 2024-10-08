@@ -12,6 +12,7 @@ class RssBot:
         self.keywords = [keyword.lower() for keyword in keywords]
         self.rss_url = rss_url
         self.request_helper = request_helper
+        logging.info("process start")
         request_helper.send_to_slack("process start")
 
         self.is_running = False

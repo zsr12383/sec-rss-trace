@@ -100,7 +100,6 @@ class YahooBot(RssBot):
 
 
 if __name__ == '__main__':
-    logging.info("process start")
     request_helper = RequestHelper(get_slack_webhook_yahoo_url())
     yahoo_rss_url = 'https://finance.yahoo.com/rss/topstories'
     yahoo_bot = YahooBot(get_yahoo_keywords().union(get_magnificent()), yahoo_rss_url, request_helper,

@@ -6,10 +6,9 @@ from itertools import takewhile
 
 from RssBot import RssBot
 from get_env import get_slack_webhook_url
+from html_body_extractor import html_body_extractor
 from nasdaq import get_nasdaq_top_stocks
 from bs4 import BeautifulSoup
-import logging_config
-import logging
 
 from requesthelper import RequestHelper
 
@@ -29,7 +28,8 @@ class Sc13Bot(RssBot):
         response = self.request_helper.request_with_exception(entry.link)
         if response is None: return
         doc = BeautifulSoup(response.text, 'html.parser')
-        contain_keyword = self.find_contain_keyword(doc)
+        body_text = html_body_extractor(doc)
+        contain_keyword = self.find_contain_keyword(body_text)
         if not contain_keyword: return
         self.send_to_slack_keyword(entry, contain_keyword)
 
@@ -41,7 +41,6 @@ class Sc13Bot(RssBot):
 
 
 if __name__ == '__main__':
-    logging.info("process start")
     request_helper = RequestHelper(get_slack_webhook_url())
     sc13_rss_url = 'https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&CIK=&type=sc%2013&company=&dateb=&owner=include&start=0&count=40&output=atom'
     sc13_bot = Sc13Bot(get_nasdaq_top_stocks(50, request_helper), sc13_rss_url, request_helper)

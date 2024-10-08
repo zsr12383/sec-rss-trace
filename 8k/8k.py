@@ -66,7 +66,6 @@ class EightKBot(Sc13Bot):
 
 
 if __name__ == '__main__':
-    logging.info("process start")
     request_helper = RequestHelper(get_slack_webhook_merge_url())
     eight_k_rss_url = 'https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&CIK=&type=8-K&company=&dateb=&owner=include&start=0&count=40&output=atom'
     eight_k_bot = EightKBot(
