@@ -4,6 +4,7 @@ import re
 from requesthelper import RequestHelper
 import logging_config
 import logging
+from threading import Lock
 
 
 class RssBot:
@@ -12,6 +13,9 @@ class RssBot:
         self.rss_url = rss_url
         self.request_helper = request_helper
         request_helper.send_to_slack("process start")
+
+        self.is_running = False
+        self.lock = Lock()
 
     def find_contain_keyword(self, text):
         ret = []
@@ -45,10 +49,14 @@ class RssBot:
             self.send_to_slack_keyword(entry, contain_keywords)
 
     def check_rss_feed(self):
-        try:
-            entries = self.get_entries()
-        except Exception as e:
-            logging.error(e)
-            self.request_helper.send_to_slack(str(e))
+        if self.lock.locked():
+            logging.info("Previous job still running, skipping this execution.")
             return
-        self.do_entries_process(entries)
+        with self.lock:
+            try:
+                entries = self.get_entries()
+            except Exception as e:
+                logging.error(e)
+                self.request_helper.send_to_slack(str(e))
+                return
+            self.do_entries_process(entries)
