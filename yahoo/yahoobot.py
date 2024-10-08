@@ -76,7 +76,7 @@ class YahooBot(RssBot):
         groq_answer = self.check_signal_by_groq(doc)
         contain_keyword = self.find_contain_keyword(doc)
 
-        msg = RequestHelper.generate_message_body(entry)
+        msg = RequestHelper.generate_message_body_for_yahoo(entry['title'], entry['link'])
         if groq_answer is not None and not groq_answer.startswith('0'):
             msg = RequestHelper.add_message(msg, "groq_answer", groq_answer)
         if contain_keyword:

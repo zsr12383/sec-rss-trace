@@ -47,7 +47,11 @@ class RequestHelper:
 
     @staticmethod
     def generate_message_body(entry) -> str:
-        return f"New entry found:\n\tTitle: {entry.title}\n\tLink: {entry.link}"
+        return f"New entry found:\n\tTitle: {entry.title}\n\tLink: {entry.link}\n\tUpdated: {entry.updated}"
+
+    @staticmethod
+    def generate_message_body_for_yahoo(title, link) -> str:
+        return f"New entry found:\n\tTitle: {title}\n\tLink: {link}"
 
     @staticmethod
     def add_message(message: str, key: str, to_add: str) -> str:
