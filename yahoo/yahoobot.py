@@ -81,7 +81,7 @@ class YahooBot(RssBot):
             msg = RequestHelper.add_message(msg, "groq_answer", groq_answer)
         if contain_keyword:
             msg = RequestHelper.add_message(msg, "keywords", str(contain_keyword))
-        if msg == RequestHelper.generate_message_body(entry): return
+        if msg == RequestHelper.generate_message_body_for_yahoo(entry['title'], entry['link']): return
         self.request_helper.send_to_slack(msg)
 
     def do_entries_process(self, entries):
