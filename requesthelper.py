@@ -45,6 +45,14 @@ class RequestHelper:
         self.session.mount('http://', adapter)
         self.session.mount('https://', adapter)
 
+    @staticmethod
+    def generate_message_body(entry) -> str:
+        return f"New entry found:\n\tTitle: {entry.title}\n\tLink: {entry.link}"
+
+    @staticmethod
+    def add_message(message: str, key: str, to_add: str) -> str:
+        return message + f'\n\t{key}: t{to_add}'
+
     def request_with_exception(self, url, method=Method.GET.value, params=None, json=None, headers=None):
         logging.info(generate_log_msg(url, method, 'Request Start'))
         headers = self.headers if headers is None else headers
@@ -68,15 +76,14 @@ class RequestHelper:
                 self.send_to_slack(err_log_msg)
             return None
         except requests.exceptions.RequestException as e:
-            msg = generate_log_msg(url, method, f'Request failed: {str(e)}')
-            logging.error(msg)
+            error_msg = generate_log_msg(url, method, f'Request failed: {str(e)}')
+            logging.error(error_msg)
             if url != self.slack_webhook_url:
-                self.send_to_slack(msg)
+                self.send_to_slack(error_msg)
             return None
 
     def send_to_slack(self, message):
         payload = {"text": message + self.border}
-        # Avoid infinite recursion by not sending Slack notifications if Slack webhook fails
         try:
             response = self.session.post(
                 self.slack_webhook_url,
@@ -85,6 +92,6 @@ class RequestHelper:
                 timeout=(5, 10)
             )
             response.raise_for_status()
-            logging.info('Error message sent to Slack successfully.')
+            logging.info('message sent to Slack successfully.')
         except requests.exceptions.RequestException as e:
             logging.error(f'Failed to send message to Slack: {e}')
