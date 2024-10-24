@@ -5,14 +5,13 @@ from urllib.parse import urljoin
 import schedule
 from bs4 import BeautifulSoup
 
-from get_env import get_slack_webhook_merge_url, get_groq_api_key, get_groq_message
-from nasdaq import get_nasdaq_top_stocks
-from requesthelper import RequestHelper
+from packages.utils.get_env import get_slack_webhook_merge_url, get_groq_api_key, get_groq_message
+from packages.scrapper.nasdaq import get_nasdaq_top_stocks
+from packages.utils.requesthelper import RequestHelper
 from sc13.sc13bot import Sc13Bot
 from groq import Groq
-from GroqHelper import GroqHelper
-from html_body_extractor import html_body_extractor
-import logging_config
+from packages.utils.GroqHelper import GroqHelper
+from packages.utils.html_body_extractor import html_body_extractor
 
 
 class EightKBot(Sc13Bot):

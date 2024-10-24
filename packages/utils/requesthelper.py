@@ -1,11 +1,10 @@
 import requests
 import logging
-import time
 from enum import Enum
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
-import get_env
+from . import get_env
 
 logger = logging.getLogger(__name__)
 

@@ -1,10 +1,11 @@
 from bs4 import BeautifulSoup
 import feedparser
 import re
-from requesthelper import RequestHelper
-import logging_config
+from packages.utils.requesthelper import RequestHelper
 import logging
 from threading import Lock
+
+logger = logging.getLogger(__name__)
 
 
 class RssBot:

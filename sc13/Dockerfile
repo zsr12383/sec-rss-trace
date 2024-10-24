@@ -13,7 +13,7 @@ RUN pip install --no-cache-dir --upgrade pip && \
 
 # Copy the rest of the application code into the container
 COPY ./sc13/*.py .
-COPY *.py .
+COPY ./packages ./packages
 
 # Ensure the Python script is executable (if needed)
 RUN chmod +x ./sc13bot.py

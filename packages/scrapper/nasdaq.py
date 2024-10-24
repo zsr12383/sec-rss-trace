@@ -3,8 +3,8 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-from requesthelper import RequestHelper
-from yahoo_keyword import get_yahoo_keywords
+from packages.utils.requesthelper import RequestHelper
+from .yahoo_keyword import get_yahoo_keywords
 
 spare_data = {'Apple', 'Adobe', 'Intuit', 'Cisco', 'Honeywell', 'Texas Instrument', 'NVIDIA', 'Microsoft', 'Automatic',
               'Intuitive', 'Cintas', 'Amgen', 'Mondelez', 'Amazon', 'Vertex', 'ASML', 'Palo', 'Ryanair', 'Gilead',

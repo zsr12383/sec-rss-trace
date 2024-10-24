@@ -13,7 +13,7 @@ RUN pip install --no-cache-dir --upgrade pip && \
 
 # Copy the rest of the application code into the container
 COPY ./8k/*.py .
-COPY *.py .
+COPY ./packages ./packages
 COPY sc13/*.py ./sc13/
 
 # Ensure the Python script is executable (if needed)

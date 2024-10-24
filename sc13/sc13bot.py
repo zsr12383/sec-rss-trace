@@ -4,13 +4,13 @@ import schedule
 from datetime import datetime, timedelta
 from itertools import takewhile
 
-from RssBot import RssBot
-from get_env import get_slack_webhook_url
-from html_body_extractor import html_body_extractor
-from nasdaq import get_nasdaq_top_stocks
+from packages.scrapper.RssBot import RssBot
+from packages.utils.get_env import get_slack_webhook_url
+from packages.utils.html_body_extractor import html_body_extractor
+from packages.scrapper.nasdaq import get_nasdaq_top_stocks
 from bs4 import BeautifulSoup
 
-from requesthelper import RequestHelper
+from packages.utils.requesthelper import RequestHelper
 
 
 class Sc13Bot(RssBot):

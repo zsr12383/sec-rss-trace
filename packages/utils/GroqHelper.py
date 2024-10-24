@@ -1,11 +1,10 @@
 import time
 
 from groq import Groq
-import logging_config
 import logging
 import re
 
-from requesthelper import RequestHelper
+from .requesthelper import RequestHelper
 
 
 class GroqHelper():
