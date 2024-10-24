@@ -1,9 +1,10 @@
+from packages.logger import logging_config
 import schedule
+from packages.scrapper.RssBot import RssBot
 from bs4 import BeautifulSoup
 from groq import Groq
 
 from packages.utils.GroqHelper import GroqHelper
-from packages.scrapper.RssBot import RssBot
 from packages.utils.get_env import get_slack_webhook_yahoo_url, get_groq_api_key, get_groq_message
 from packages.scrapper.yahoo_keyword import get_yahoo_keywords, get_magnificent
 from packages.utils.requesthelper import RequestHelper

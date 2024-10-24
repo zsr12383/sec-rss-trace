@@ -1,4 +1,3 @@
-from packages.logger import logging_config
 from bs4 import BeautifulSoup
 import feedparser
 import re

@@ -1,3 +1,4 @@
+from packages.logger import logging_config
 import logging
 import time
 from urllib.parse import urljoin

@@ -1,3 +1,4 @@
+from packages.logger import logging_config
 import time
 import pytz
 import schedule
