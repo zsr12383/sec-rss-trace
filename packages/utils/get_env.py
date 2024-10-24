@@ -4,14 +4,6 @@ from dotenv import load_dotenv
 load_dotenv(dotenv_path='/app/.env')
 
 
-def get_slack_token():
-    return os.getenv('SLACK_API_TOKEN')
-
-
-def get_slack_channel_id():
-    return os.getenv('SLACK_CHANNEL_ID')
-
-
 def get_slack_webhook_url():
     return os.getenv('SLACK_WEBHOOK_URL')
 
